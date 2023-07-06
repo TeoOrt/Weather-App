@@ -1,5 +1,5 @@
 #include <curl/curl.h>
-
+#include <sstream>
 class CURLplusplus
 {
 private:
