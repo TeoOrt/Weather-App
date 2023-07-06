@@ -9,3 +9,6 @@
 /.vscode
 
 main
+
+# avoid push any executables
+weather_app
