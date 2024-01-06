@@ -1,17 +1,20 @@
 
+#include <sstream>
 #ifndef PARSER_H
 #include <iostream>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
+
+namespace pt = boost::property_tree;
 
 class Parser
 {
+  private:
+  pt::ptree *root;
 
-private:
-  int hello{0};
+  public:
+  Parser(std::stringstream);
 
-public:
-  Parser();
-
-  ~Parser();
 };
 
 #endif // !v
