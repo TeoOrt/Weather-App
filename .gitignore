@@ -7,7 +7,7 @@
 .vscode
 
 /.vscode
-
+/build
 main
 .build
 # avoid push any executables
