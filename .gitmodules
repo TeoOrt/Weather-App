@@ -1,3 +1,6 @@
 [submodule "inc/json"]
 	path = inc/json
 	url = https://github.com/nlohmann/json
+[submodule "json"]
+	path = json
+	url = https://github.com/nlohmann/json.git

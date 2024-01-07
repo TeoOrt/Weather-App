@@ -1,37 +1,57 @@
-#include <fstream>
+// Copyright (c) 2024 Mateo Ortega
+// SPDX-License-Identifier: MIT
+
+#include <boost/program_options.hpp>
+#include <handler.h>
 #include <iostream>
-#include "inc/user_input.h"
-#include "inc/parser.h"
-#include "inc/services.h"
+#include <iterator>
 #include <memory>
-using namespace std;
-using json = nlohmann::json;
-// we are goin to use functional programming with a bit of oop
+#include <weather_man.h>
 
-int main()
-{
+namespace po = boost::program_options;
 
-    string city;
+typedef std::string string;
 
-    getline(cin, city);
-    shared_ptr<UserInput> input = make_shared<UserInput>(city);
+static const string CITY = "city";
+static const string HELP = "help";
+static const string TEMPERATURE = "temperature";
 
-    shared_ptr<Curl_handler> handler = make_shared<Curl_handler>(input);
-    shared_ptr<output_handler> output = make_shared<output_handler>();
-    try
-    {
-        cout << output->parse(handler->get_request()) << endl;
+void check_args(po::variables_map vm) {}
+
+int main(int argc, char *argv[]) {
+  string weather_city;
+  try {
+    po::options_description desc("Allowed options");
+    desc.add_options()("help", "produce help message")(
+        "city", po::value<string>(),
+        "specify the city for weather information")(
+        "celcius",
+        "display temperature in celcius")("less", "only shows the temperature");
+    po::variables_map vm;
+    po::store(po::parse_command_line(argc, argv, desc), vm);
+    po::notify(vm);
+
+    if (vm.count(HELP)) {
+      std::cout << desc << std::endl;
     }
-    catch (std::runtime_error &e)
-    {
-        cerr << e.what() << endl;
+
+    if (!vm.count(CITY)) {
+      std::cerr << desc << std::endl;
     }
+
+    const string city = vm[CITY].as<string>();
+    weather_city = city;
+  } catch (const std::exception &e) {
+    std::cerr << "Missing City\n";
+    exit(0);
+    return 1;
+  }
+  const std::unique_ptr<Impl> weather =
+      WeatherMan{weather_city}.withCelcius().withDescription().build();
+
+  Handler *testet = new Handler(weather, "372502867223ae6258cd8efd9c3d2602");
+  std::cout << testet->get_request() << "\n";
+  weather->toString();
+
+  return 0;
 }
-/*
- [√] ask user for city
- [√] validate string from user
- [ ] compact string for sending it over json
- [ ] send json string along with api key to server
- [ ] parse json for result
- [ ] display user the results from the json
-*/

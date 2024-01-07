@@ -7,8 +7,8 @@
 .vscode
 
 /.vscode
-
+/build
 main
-
+.build
 # avoid push any executables
 weather_app
